@@ -12,6 +12,7 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL,
     password VARCHAR(200) NOT NULL,
     date_joined timestamp with time zone DEFAULT CURRENT_TIMESTAMP(0),
+    current_day INTEGER,
     UNIQUE (email, username)
 );
 
@@ -41,8 +42,8 @@ CREATE TABLE posts (
     username VARCHAR(100) NOT NULL,
     group_id uuid,
     verse_of_the_day VARCHAR(1000) NOT NULL,
-    verse_book VARCHAR(100) NOT NULL,
-    verse_verse VARCHAR(100) NOT NULL,
+    verse_book VARCHAR(100),
+    verse_verse VARCHAR(100),
     thought_on_verse1 VARCHAR(2000) NOT NULL,
     thought_on_verse2 VARCHAR(2000) NOT NULL,
     thought_on_verse3 VARCHAR(2000) NOT NULL,
@@ -55,3 +56,11 @@ CREATE TABLE posts (
     date_posted timestamp with time zone DEFAULT CURRENT_TIMESTAMP(0)
 );
 
+CREATE TABLE messages (
+    id SMALLSERIAL PRIMARY KEY,
+    message VARCHAR(2000) NOT NULL,
+    message_kor VARCHAR(2000) NOT NULL,
+    book VARCHAR(100),
+    book_kor VARCHAR(100),
+    chapter_and_verse VARCHAR(20)
+);

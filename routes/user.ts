@@ -64,7 +64,7 @@ router.post("/", async (req, res) => {
       const isInGroup = group_id ? true : false;
 
       const newUser = await pool.query(
-        "INSERT INTO users(is_in_group, group_id, username, first_name, last_name, age, email, password) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+        "INSERT INTO users(is_in_group, group_id, username, first_name, last_name, age, email, password, current_day) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
         [
           isInGroup,
           group_id,
@@ -73,7 +73,8 @@ router.post("/", async (req, res) => {
           last_name,
           age,
           email,
-          bcryptPassword
+          bcryptPassword,
+          1
         ]
       );
 

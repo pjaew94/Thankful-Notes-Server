@@ -68,6 +68,10 @@ router.post("/", authorization, async (req, res) => {
         ]
       );
 
+      await pool.query("UPDATE users SET current_day = current_day + 1 WHERE id = $1", [
+        req.user
+      ])
+
       return res.status(200).send(newPost);
     } catch (err) {
       console.log(err);

@@ -21,6 +21,7 @@ app.use(cors());
 app.use("/api/user", require("./routes/user"));
 app.use("/api/posts", require("./routes/posts"));
 app.use("/api/group", require("./routes/group"));
+app.use("/api/messages", require("./routes/messages"));
 
 const port = process.env.PORT || 5002;
 
