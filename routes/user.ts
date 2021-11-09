@@ -9,11 +9,11 @@ const pool = require("../db");
 const router = express.Router();
 
 // Get User's Info - FINISH
-router.get("/:id", authorization, async (req, res) => {
+router.get("/", authorization, async (req, res) => {
   try {
     const user = await pool.query(
       "SELECT id, group_id, is_in_group, first_name, last_name,age, email, date_joined FROM users WHERE id = $1",
-      [req.params.id]
+      [req.user]
     );
 
     res.status(200).json(user.rows[0]);
