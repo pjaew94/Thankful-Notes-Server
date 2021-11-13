@@ -12,12 +12,12 @@ module.exports = async (req: Request, res: Response, next: NextFunction) => {
     
 
         if(!jwtToken){
-            return res.status(403).json("Not authorized to access this feature.")
+            return res.status(403).json({eng: "Not authorized to access this feature.", kor: "이 기능에 액세스할 수 있는 권한이 없습니다."})
         }
         if(process.env.jwtSecret){
             await jwt.verify(jwtToken, process.env.jwtSecret, (error, decoded) => {
                 if(error) {
-                    res.status(401).json({ msg: 'Token is not valid' });
+                    res.status(401).json( 'Token is not valid' );
                 } else {
                     req.user = decoded!.user;
                     next();

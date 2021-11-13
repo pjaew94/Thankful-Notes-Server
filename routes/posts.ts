@@ -101,7 +101,7 @@ router.get("/:id", authorization, async (req, res) => {
     ) {
       return res
         .status(401)
-        .json("You do not have permission to view this post");
+        .json({eng: "You do not have permission to view this post", kor: "이 사용자의 게시물을 볼 수 있는 권한이 없습니다."});
     } else {
       return res.status(200).send(postInfo);
     }
@@ -126,10 +126,10 @@ router.delete("/:id", authorization, async (req, res) => {
     if (postUsername !== deleterUsername) {
       return res
         .status(401)
-        .json("You do not have permission to delete this post");
+        .json({eng: "You do not have permission to delete this post.", kor: "이 게시물을 삭제할 권한이 없습니다."});
     } else {
       await pool.query("DELETE FROM posts WHERE id = $1", [req.params.id]);
-      return res.status(200).send("The post has been successfully deleted");
+      return res.status(200).json({eng: "The post has been successfully deleted.", kor: "게시물이 성공적으로 삭제되었습니다."});
     }
   } catch (err) {
     console.log(err);
@@ -153,7 +153,7 @@ router.put("/:id", authorization, async (req, res) => {
     if (postUsername !== editorUsername) {
       return res
         .status(401)
-        .send("You do not have permission to edit this post");
+        .json({eng: "You do not have permission to edit this post.", kor: "이 게시물을 수정할 권한이 없습니다."});
     } else {
       const {
         thought_on_verse1,
@@ -183,7 +183,7 @@ router.put("/:id", authorization, async (req, res) => {
         ]
       );
 
-      return res.status(200).send("Successfully edited post");
+      return res.status(200).json({eng: "Successfully edited post.", kor: "게시물을 수정했습니다."});
     }
   } catch (err) {
     console.log(err);

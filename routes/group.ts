@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
       );
 
       if (group.rows.length !== 0) {
-        return res.status(401).send("That unique group name already exists!");
+        return res.status(401).json({eng: "That unique group name already exists!", kor: "그룹 이름이 이미 존재합니다!"});
       }
 
       const newGroup = await pool.query(
@@ -74,7 +74,7 @@ router.get("/posts/:group_id", authorization, async (req, res) => {
     ) {
       return res
         .status(401)
-        .send("You do not have permission to view the group's posts");
+        .json({eng: "You do not have permission to view the group's posts.", kor: "그룹의 게시물을 볼 수 있는 권한이 없습니다."});
     }
     const posts = await pool.query(
       "SELECT * FROM posts WHERE group_id = $1",
