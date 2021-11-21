@@ -11,8 +11,9 @@ CREATE TABLE users (
     age INT NOT NULL check(age >= 1 and age <= 120),
     email VARCHAR(100) NOT NULL,
     password VARCHAR(200) NOT NULL,
-    date_joined timestamp with time zone DEFAULT CURRENT_TIMESTAMP(0),
+    date_joined DATE DEFAULT CURRENT_DATE,
     current_day INTEGER,
+    last_posted_date VARCHAR(100),
     UNIQUE (email, username)
 );
 
@@ -29,7 +30,7 @@ CREATE TABLE groups (
     uuid_generate_v4(),
     unique_group_name VARCHAR(100) NOT NULL,
     group_name VARCHAR(100) NOT NULL,
-    date_joined timestamp with time zone DEFAULT CURRENT_TIMESTAMP(0),
+    date_created DATE DEFAULT CURRENT_DATE,
     UNIQUE (unique_group_name)
 );
 
@@ -41,9 +42,13 @@ CREATE TABLE posts (
     uuid_generate_v4(),
     username VARCHAR(100) NOT NULL,
     group_id uuid,
-    verse_of_the_day VARCHAR(1000) NOT NULL,
-    verse_book VARCHAR(100),
-    verse_verse VARCHAR(100),
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    message VARCHAR(1000) NOT NULL,
+    message_kor VARCHAR(1000) NOT NULL,
+    book VARCHAR(100),
+    book_kor VARCHAR(100),
+    chapter_and_verse VARCHAR(100),
     thought_on_verse1 VARCHAR(2000) NOT NULL,
     thought_on_verse2 VARCHAR(2000) NOT NULL,
     thought_on_verse3 VARCHAR(2000) NOT NULL,
@@ -53,7 +58,7 @@ CREATE TABLE posts (
     show_thanks2 VARCHAR(2000) NOT NULL,
     show_thanks3 VARCHAR(2000) NOT NULL,
     is_private BOOLEAN NOT NULL,
-    date_posted timestamp with time zone DEFAULT CURRENT_TIMESTAMP(0)
+    date_posted DATE DEFAULT CURRENT_DATE
 );
 
 CREATE TABLE messages (

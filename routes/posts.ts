@@ -7,14 +7,27 @@ const router = express.Router();
 // Create Post - FINISH
 router.post("/", authorization, async (req, res) => {
   const user = await pool.query(
-    "SELECT group_id, username FROM users WHERE id = $1",
+    "SELECT group_id, username, last_posted_date, first_name, last_name FROM users WHERE id = $1",
     [req.user]
   );
+
+  const latestPost = await pool.query(
+    "SELECT id FROM posts WHERE date_posted = $1",
+    [user.rows[0].last_posted_date]
+  )
+
+
+    if(latestPost.rows.length > 0) {
+      return res.status(400).json({eng: "You've already posted for today! Come back tomorrow to post more thanks!", kor: "이미 오늘에 대해 게시했습니다. 내일 돌아오셔서 새로운 감사함 올려주세요."});
+    }
+
   const userGroupId = user.rows[0].group_id;
   const {
-    verse_of_the_day,
-    verse_book,
-    verse_verse,
+    message,
+    message_kor,
+    book,
+    book_kor,
+    chapter_and_verse,
     thought_on_verse1,
     thought_on_verse2,
     thought_on_verse3,
@@ -24,14 +37,20 @@ router.post("/", authorization, async (req, res) => {
     show_thanks2,
     show_thanks3,
     is_private,
-  } = req.body;
+  } = req.body.data;
+
+  console.log(user.rows[0])
 
   const data = {
     username: user.rows[0].username,
+    first_name: user.rows[0].first_name, 
+    last_name: user.rows[0].last_name,
     group_id: userGroupId,
-    verse_of_the_day,
-    verse_book,
-    verse_verse,
+    message,
+    message_kor,
+    book,
+    book_kor,
+    chapter_and_verse,
     thought_on_verse1,
     thought_on_verse2,
     thought_on_verse3,
@@ -49,13 +68,17 @@ router.post("/", authorization, async (req, res) => {
   } else {
     try {
       const newPost = await pool.query(
-        "INSERT INTO posts(username, group_id, verse_of_the_day, verse_book, verse_verse, thought_on_verse1,thought_on_verse2,thought_on_verse3,thought_on_verse4,thought_on_verse5, show_thanks1,show_thanks2,show_thanks3, is_private) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *",
+        "INSERT INTO posts(username, group_id, first_name, last_name, message, message_kor, book, book_kor, chapter_and_verse, thought_on_verse1,thought_on_verse2,thought_on_verse3,thought_on_verse4,thought_on_verse5, show_thanks1,show_thanks2,show_thanks3, is_private) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING *",
         [
           user.rows[0].username,
           userGroupId,
-          verse_of_the_day,
-          verse_book,
-          verse_verse,
+          user.rows[0].first_name,
+          user.rows[0].last_name,
+          message,
+          message_kor,
+          book,
+          book_kor,
+          chapter_and_verse,
           thought_on_verse1,
           thought_on_verse2,
           thought_on_verse3,
@@ -68,7 +91,7 @@ router.post("/", authorization, async (req, res) => {
         ]
       );
 
-      await pool.query("UPDATE users SET current_day = current_day + 1 WHERE id = $1", [
+      await pool.query("UPDATE users SET current_day = current_day + 1, last_posted_date = CURRENT_DATE WHERE id = $1", [
         req.user
       ])
 
@@ -191,7 +214,52 @@ router.put("/:id", authorization, async (req, res) => {
   }
 });
 
+// Check if user already posted today
+router.get('/check/if-posted', authorization, async(req, res) => {
 
+  try {
+    const user = await pool.query(
+      "SELECT group_id, username, last_posted_date FROM users WHERE id = $1",
+      [req.user]
+    );
+
+    const latestPost = await pool.query(
+      "SELECT id FROM posts WHERE date_posted = $1",
+      [user.rows[0].last_posted_date]
+    )
+  
+      if(latestPost.rows.length > 0) {
+        return res.status(200).send(true)
+      } else {
+        return res.status(200).send(false)
+      }
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+})
+
+router.get('/todays/post', authorization, async(req,res) => {
+  try {
+    const user = await pool.query(
+      "SELECT current_day FROM users WHERE id = $1",
+      [req.user]
+    );
+
+    const todaysPostId = user.rows[0].current_day;
+
+    const todaysPost = await pool.query("SELECT * FROM messages WHERE id = $1", [
+      todaysPostId
+    ])
+
+    return res.status(200).send(todaysPost.rows[0])
+    
+  } catch (err) {
+        console.log(err);
+    res.status(500).send("Server Error");
+  }
+})
 
 
 

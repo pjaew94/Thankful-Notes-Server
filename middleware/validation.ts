@@ -3,17 +3,17 @@ import { IGroupFields, ILoginFields, IPostsFields, IRegisterFields } from "./typ
 
 export const registerValidation = (data: IRegisterFields) => {
   const schema = Joi.object({
-    group_id: Joi.string(),
+    // unique_group_name: Joi.string().min(0).max(100).optional(),
     username: Joi.string().min(1).max(100).required(),
     first_name: Joi.string().min(1).max(100).required(),
     last_name: Joi.string().min(1).max(100).required(),
     age: Joi.number().integer().min(1).max(120).required(),
     email: Joi.string().email({
-      minDomainSegments: 2,
+    minDomainSegments: 2,
       tlds: { allow: ["com", "net", "org"] },
     }),
-    password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
-    repeat_password: Joi.ref("password")
+    password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{6,30}$")),
+    repeat_password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{6,30}$"))
   }).unknown();
 
 
@@ -44,10 +44,14 @@ export const groupValidation = (data: IGroupFields) => {
 export const postValidation = (data: IPostsFields) => {
   const schema = Joi.object({
     username: Joi.string().required(),
+    first_name: Joi.string().required(),
+    last_name: Joi.string().required(),
     group_id: Joi.string(),
-    verse_of_the_day: Joi.string().required(),
-    verse_book: Joi.string().required(),
-    verse_verse: Joi.string().required(),
+    message: Joi.string().required(),
+    message_kor: Joi.string().required(),
+    book: Joi.string(),
+    book_kor: Joi.string(),
+    chapter_and_verse: Joi.string(),
     thought_on_verse1: Joi.string().required(),
     thought_on_verse2: Joi.string().required(),
     thought_on_verse3: Joi.string().required(),

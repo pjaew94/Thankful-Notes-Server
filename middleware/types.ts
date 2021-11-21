@@ -1,7 +1,7 @@
 import {Request, Response,} from 'express';
 
 export interface IRegisterFields {
-  group_id: string;
+  unique_group_name?: string | null;
   first_name: string;
   last_name: string;
   age: number;
@@ -28,9 +28,11 @@ export interface IGroupFields {
 export interface IPostsFields {
   username: string,
   group_id: string,
-  verse_of_the_day: string,
-  verse_book: string,
-  verse_verse: string,
+  message: string,
+  message_kor: string,
+  book: string,
+  book_kor: string,
+  chapter_and_verse: string,
   thought_on_verse1: string,
   thought_on_verse2: string,
   thought_on_verse3: string,

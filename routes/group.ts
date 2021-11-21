@@ -7,13 +7,16 @@ const router = express.Router();
 
 // Create New Group - FINISH
 router.post("/", async (req, res) => {
-  const { error } = groupValidation(req.body);
+  const { error } = groupValidation(req.body.data);
 
   if (error) {
+
     return res.status(400).send(error.details[0].message);
   } else {
     try {
-      const { unique_group_name, group_name } = req.body;
+      console.log(req.body)
+      const { unique_group_name, group_name } = req.body.data;
+
 
       const group = await pool.query(
         "SELECT * FROM groups WHERE unique_group_name = $1",
@@ -21,7 +24,7 @@ router.post("/", async (req, res) => {
       );
 
       if (group.rows.length !== 0) {
-        return res.status(401).json({eng: "That unique group name already exists!", kor: "그룹 이름이 이미 존재합니다!"});
+        return res.status(401).json({eng: "That group name already exists. Please choose a different group name.", kor: "해당 그룹 이름이 이미 존재합니다. 다른 그룹 이름을 선택하세요."});
       }
 
       const newGroup = await pool.query(
@@ -45,7 +48,7 @@ router.get('/', authorization, async(req, res) => {
     const group = await pool.query("SELECT * FROM groups WHERE id = $1", [usersGroupId])
 
 
-    const allMembers = await pool.query("SELECT username, first_name, last_name FROM users WHERE group_id = $1", [
+    const allMembers = await pool.query("SELECT username, first_name, last_name, current_day FROM users WHERE group_id = $1", [
       usersGroupId
     ]);
 
