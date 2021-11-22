@@ -80,7 +80,7 @@ router.get("/posts/:group_id", authorization, async (req, res) => {
         .json({eng: "You do not have permission to view the group's posts.", kor: "그룹의 게시물을 볼 수 있는 권한이 없습니다."});
     }
     const posts = await pool.query(
-      "SELECT * FROM posts WHERE group_id = $1",
+      "SELECT * FROM posts WHERE group_id = $1 ORDER BY date_posted DESC",
       [req.params.group_id]
     );
 

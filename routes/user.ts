@@ -344,7 +344,7 @@ router.get("/posts/:username", authorization, async (req, res) => {
         kor: "이 사용자의 게시물을 볼 수 있는 권한이 없습니다.",
       });
     }
-    const posts = await pool.query("SELECT * FROM posts WHERE username = $1", [
+    const posts = await pool.query("SELECT * FROM posts WHERE username = $1 ORDER BY date_posted DESC", [
       req.params.username,
     ]);
 
