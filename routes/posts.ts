@@ -188,7 +188,7 @@ router.put("/:id", authorization, async (req, res) => {
         show_thanks2,
         show_thanks3,
         is_private,
-      } = req.body;
+      } = req.body.data;
 
       await pool.query(
         "UPDATE posts SET thought_on_verse1 = $2, thought_on_verse2 = $3, thought_on_verse3 = $4, thought_on_verse4 = $5, thought_on_verse5 = $6, show_thanks1 = $7, show_thanks2 = $8, show_thanks3 = $9, is_private = $10 WHERE id = $1",
